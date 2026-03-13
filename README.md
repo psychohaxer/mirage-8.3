@@ -116,6 +116,78 @@ If you need to run Composer as the host user, rebuild with appropriate `APP_UID`
 
 Place your app files under `src/public`. The web root is `/var/www/html/public` in the containers. Replace the sample `index.php` with your application front controller.
 
+**Project directory examples**
+
+Below are common layouts for placing framework projects under `src`. Nginx is configured to serve from `src/public` by default; adjust if your framework uses a different public folder.
+
+- Laravel
+
+```
+src/
+└─ your-laravel-app/
+  ├─ app/
+  ├─ bootstrap/
+  ├─ config/
+  ├─ public/    <-- web root (map to `src/public` or symlink)
+  ├─ resources/
+  ├─ routes/
+  ├─ storage/
+  └─ artisan
+```
+
+Place the contents of `your-laravel-app/public` into `src/public` or set Nginx `root` to `src/your-laravel-app/public`.
+
+- Symfony
+
+```
+src/
+└─ your-symfony-app/
+  ├─ bin/
+  ├─ config/
+  ├─ public/    <-- web root (index.php)
+  ├─ src/
+  ├─ var/
+  └─ vendor/
+```
+
+Point Nginx to `src/your-symfony-app/public` or copy the `public` contents into `src/public`.
+
+- CodeIgniter (4)
+
+```
+src/
+└─ your-ci-app/
+  ├─ app/
+  ├─ public/    <-- web root (index.php)
+  ├─ system/
+  └─ writable/
+```
+
+Copy `public` into `src/public` or point Nginx to `src/your-ci-app/public`.
+
+- CakePHP
+
+```
+src/
+└─ your-cake-app/
+  ├─ bin/
+  ├─ config/
+  ├─ logs/
+  ├─ plugins/
+  ├─ templates/
+  ├─ tmp/
+  ├─ vendor/
+  └─ webroot/    <-- web root (index.php)
+```
+
+Map `webroot` to `src/public` or update Nginx `root` to `src/your-cake-app/webroot`.
+
+- Other / plain PHP
+
+For simple PHP apps, place `index.php` and assets into `src/public` and put other PHP classes under `src/src` or a preferred structure.
+
+If you prefer to keep each project self-contained under `src/<project>`, update Nginx `root` in `docker/nginx/default.conf` to the chosen public folder.
+
 **Customization & Common edits**
 
 - Change the PHP version by editing `docker/php/Dockerfile` base image tag.
