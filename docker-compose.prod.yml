@@ -1,0 +1,30 @@
+# Production compose overrides for Mirage Stack
+# Use together with the main compose file:
+# docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  web:
+    ports:
+      - "${PORT_WEB:-80}:80"
+    restart: always
+
+  app:
+    # Build app image for production (no host user mapping)
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: ${APP_CONTAINER_NAME:-mirage_app}
+    working_dir: /var/www/html
+    networks:
+      - mirage_net
+    restart: always
+
+  # Do not enable phpmyadmin in production by default (it's a `dev` profile in the main compose)
+
+volumes:
+  dbdata:
+  pgdata:
+  redisdata:
+
+networks:
+  mirage_net:

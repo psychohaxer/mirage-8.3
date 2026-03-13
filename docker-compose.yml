@@ -75,6 +75,34 @@ services:
       - db
     networks:
       - mirage_net
+    profiles:
+      - dev
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: ${POSTGRES_CONTAINER_NAME:-mirage_postgres}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mirage_db}
+      POSTGRES_USER: ${POSTGRES_USER:-mirage_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mirage_pass}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - mirage_net
+    profiles:
+      - postgres
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: ${REDIS_CONTAINER_NAME:-mirage_redis}
+    volumes:
+      - redisdata:/data
+    networks:
+      - mirage_net
+    profiles:
+      - redis
     restart: unless-stopped
 
 networks:
@@ -82,3 +110,8 @@ networks:
 
 volumes:
   dbdata:
+  pgdata:
+  redisdata:
+
+  # Optional services (start with profiles)
+

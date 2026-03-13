@@ -39,6 +39,45 @@ docker compose down
 - `db` runs MariaDB and persists data in the `dbdata` volume.
 - `phpmyadmin` connects to the `db` service for DB management.
 
+**Optional services (profiles)**
+
+This stack supports optional developer services (Postgres, Redis) that are defined in `docker-compose.yml` but are inactive by default. They can be enabled with Compose profiles so you don't need to comment/uncomment services.
+
+- Start default stack only:
+
+```bash
+docker compose up -d
+```
+
+- Start with Postgres:
+
+```bash
+docker compose --profile postgres up -d
+```
+
+- Start with Redis:
+
+```bash
+docker compose --profile redis up -d
+```
+
+Or enable multiple profiles with the `COMPOSE_PROFILES` env var:
+
+```bash
+export COMPOSE_PROFILES=postgres,redis
+docker compose up -d
+```
+
+**Production compose**
+
+Use the production override file to run a production-friendly configuration together with the main compose file:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+The production override adjusts ports and restart policies and relies on profiles in the main file to avoid starting dev-only services like phpMyAdmin.
+
 **Environment / Configuration**
 
 - Environment variables are read by `docker-compose.yml`. Useful variables:
