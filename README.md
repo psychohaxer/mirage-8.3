@@ -1,7 +1,6 @@
 # Mirage Dev Stack 8.3
 
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Docker Compose](https://img.shields.io/badge/Docker%20Compose-ready-blue.svg)
-]
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Docker Compose](https://img.shields.io/badge/Docker%20Compose-ready-blue.svg)](https://docs.docker.com/compose/)
 
 A lightweight, XAMPP-like developer environment based on Docker Compose. Provides PHP-FPM (PHP 8.3), Nginx, MariaDB and phpMyAdmin for local development and simple deployment workflows.
 
