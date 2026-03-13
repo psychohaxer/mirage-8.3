@@ -1,5 +1,8 @@
 # Mirage Dev Stack 8.3
 
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Docker Compose](https://img.shields.io/badge/Docker%20Compose-ready-blue.svg)
+]
+
 A lightweight, XAMPP-like developer environment based on Docker Compose. Provides PHP-FPM (PHP 8.3), Nginx, MariaDB and phpMyAdmin for local development and simple deployment workflows.
 
 **Quick Start**
@@ -208,6 +211,10 @@ This stack is optimized for local development. For production use:
 - Use production-ready images (e.g., full Debian/Alpine production images) and tune PHP-FPM/Nginx configs.
 - Secure database credentials using secrets or environment management.
 - Add TLS (reverse proxy or load balancer) and restrict phpMyAdmin access.
+
+**License**
+
+This project is released under the MIT License — see the `LICENSE` file for details. Feel free to use, modify and share.
 
 **Where to look in this repo**
 
