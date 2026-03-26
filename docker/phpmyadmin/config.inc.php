@@ -18,8 +18,8 @@ $cfg['Servers'][$i]['host'] = getenv('PMA_HOST') ?: 'db';
 $cfg['Servers'][$i]['port'] = 3306;
 $cfg['Servers'][$i]['socket'] = '';
 $cfg['Servers'][$i]['auth_type'] = 'config';
-$cfg['Servers'][$i]['user'] = getenv('PMA_USER') ?: 'rmm_user';
-$cfg['Servers'][$i]['password'] = getenv('PMA_PASSWORD') ?: 'rmm_pass';
+$cfg['Servers'][$i]['user'] = getenv('PMA_USER') ?: 'mirage_user';
+$cfg['Servers'][$i]['password'] = getenv('PMA_PASSWORD') ?: 'mirage_pass';
 $cfg['Servers'][$i]['AllowNoPassword'] = false;
 $cfg['Servers'][$i]['AllowRoot'] = false;
 

@@ -19,6 +19,11 @@ services:
       - mirage_net
     restart: always
 
+  # Keep phpMyAdmin available as an opt-in dev service when using the prod override
+  phpmyadmin:
+    profiles:
+      - dev
+
   # Do not enable phpmyadmin in production by default (it's a `dev` profile in the main compose)
 
 volumes:

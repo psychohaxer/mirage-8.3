@@ -75,8 +75,6 @@ services:
       - db
     networks:
       - mirage_net
-    profiles:
-      - dev
     restart: unless-stopped
 
   postgres:
@@ -107,6 +105,8 @@ services:
 
 networks:
   mirage_net:
+    name: ${NETWORK_NAME:-mirage_net}
+    driver: bridge
 
 volumes:
   dbdata:
