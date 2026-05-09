@@ -1,5 +1,7 @@
 # Mirage Dev Stack 8.3
 
+[🇮🇩 Versi Indonesia di bawah](#versi-indonesia)
+
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Docker Compose](https://img.shields.io/badge/Docker%20Compose-ready-blue.svg)](https://docs.docker.com/compose/)
 
 A lightweight, XAMPP-like developer environment based on Docker Compose. Provides PHP-FPM (PHP 8.3), Nginx, MariaDB and phpMyAdmin for local development and simple deployment workflows.
@@ -222,3 +224,81 @@ This project is released under the MIT License — see the `LICENSE` file for de
 - Nginx config: `docker/nginx/default.conf`.
 - PHP Dockerfile: `docker/php/Dockerfile`.
 - App entry: `src/public/index.php`.
+
+---
+
+<a name="versi-indonesia"></a>
+# 🇮🇩 Versi Indonesia
+
+Lingkungan pengembangan (*developer environment*) yang ringan layaknya XAMPP berbasis Docker Compose. Menyediakan PHP-FPM (PHP 8.3), Nginx, MariaDB, dan phpMyAdmin untuk pengembangan lokal dan *deployment* sederhana.
+
+**Mulai Cepat**
+
+Persyaratan: Docker dan Docker Compose.
+
+1. Build dan jalankan stack:
+```bash
+docker compose up -d --build
+```
+
+2. Buka aplikasi di browsermu:
+- Web site: http://localhost:8080 (diatur oleh `PORT_WEB`)
+- phpMyAdmin: http://localhost:8081 (diatur oleh `PORT_PMA`)
+
+3. Matikan stack:
+```bash
+docker compose down
+```
+
+**Struktur Repositori**
+- `docker-compose.yml` — Service Compose (`app`, `web`, `db`, `phpmyadmin`).
+- `docker/nginx/default.conf` — Nginx vhost; document root berada di `/var/www/html/public`.
+- `docker/php/Dockerfile` — Image PHP-FPM (membangun PHP 8.3 Alpine + Node.js + NPM + ekstensi umum dan composer).
+- `docker/php/uploads.ini` — Konfigurasi tambahan PHP.
+- `src/` — Source code aplikasi yang di-*mount* ke dalam kontainer. Letakkan kodemu di dalam `src/public` (Nginx document root).
+
+**Cara Kerjanya**
+- Service `app` membangun image PHP-FPM dan berjalan sebagai user non-root `app`.
+- Service `web` menjalankan Nginx dan meneruskan request `.php` ke `app:9000`.
+- `db` menjalankan MariaDB 10.11 *official* dan menyimpan data secara persisten di volume `dbdata`.
+- `phpmyadmin` terhubung ke service `db` untuk manajemen database (menggunakan image ringan *official*).
+
+**Service Opsional (Profiles)**
+Stack ini mendukung service tambahan untuk developer (Postgres, Redis) yang didefinisikan di `docker-compose.yml` tetapi tidak aktif secara *default*. Mereka bisa diaktifkan menggunakan *Compose profiles*.
+
+- Hanya jalankan stack bawaan:
+```bash
+docker compose up -d
+```
+- Jalankan beserta Postgres:
+```bash
+docker compose --profile postgres up -d
+```
+
+**Compose Production**
+Gunakan file *override* production untuk menjalankan konfigurasi production secara bersamaan dengan file compose utama:
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+**Konfigurasi / Environment**
+Buat file `.env` di *root* repositori untuk menimpa konfigurasi *default*:
+```env
+PORT_WEB=8080
+PORT_PMA=8081
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=mirage_db
+MYSQL_USER=mirage_user
+MYSQL_PASSWORD=mirage_pass
+```
+
+**Menggunakan Composer / NPM / Artisan**
+Untuk menjalankan perintah di dalam kontainer PHP:
+```bash
+docker compose exec app bash
+# Kemudian dari dalam kontainer:
+composer install
+npm install
+npm run dev           # untuk kompilasi frontend
+php artisan migrate
+```
