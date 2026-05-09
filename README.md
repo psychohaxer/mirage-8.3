@@ -29,17 +29,16 @@ docker compose down
 
 - `docker-compose.yml` — Compose services (`app`, `web`, `db`, `phpmyadmin`).
 - `docker/nginx/default.conf` — Nginx vhost; document root is `/var/www/html/public`.
-- `docker/php/Dockerfile` — PHP-FPM image (builds PHP 8.3 + common extensions and composer).
+- `docker/php/Dockerfile` — PHP-FPM image (builds PHP 8.3 Alpine + Node.js + NPM + common extensions and composer).
 - `docker/php/uploads.ini` — custom PHP ini additions.
-- `docker/phpmyadmin/` — phpMyAdmin build and config.
 - `src/` — application source mounted into containers. Put your project files under `src/public` (the Nginx document root).
 
 **How it works**
 
 - The `app` service builds a PHP-FPM image and runs as a non-root `app` user.
 - The `web` service runs Nginx and forwards `.php` requests to `app:9000`.
-- `db` runs MariaDB and persists data in the `dbdata` volume.
-- `phpmyadmin` connects to the `db` service for DB management.
+- `db` runs official MariaDB 10.11 and persists data in the `dbdata` volume.
+- `phpmyadmin` connects to the `db` service for DB management (using the official lightweight image).
 
 **Optional services (profiles)**
 
@@ -109,6 +108,8 @@ To run commands inside the PHP container:
 docker compose exec app bash
 # then from inside container (as `app` user):
 composer install
+npm install
+npm run dev           # if compiling frontend assets (Tailwind/Vite)
 php artisan migrate   # if using Laravel, etc.
 ```
 

@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
 
   db:
-    image: linuxserver/mariadb:latest
+    image: mariadb:10.11
     container_name: ${DB_CONTAINER_NAME:-mirage_db}
     restart: unless-stopped
     environment:
@@ -61,9 +61,7 @@ services:
       start_period: 30s
 
   phpmyadmin:
-    build:
-      context: ./docker/phpmyadmin
-      dockerfile: Dockerfile
+    image: phpmyadmin:latest
     container_name: ${PMA_CONTAINER_NAME:-mirage_phpmyadmin}
     environment:
       PMA_HOST: db

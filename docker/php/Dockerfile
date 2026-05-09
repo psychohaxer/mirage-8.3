@@ -1,55 +1,37 @@
-FROM php:8.3-fpm-alpine AS builder
+FROM php:8.3-fpm-alpine
 
-RUN apk add --no-cache --virtual .build-deps \
-    $PHPIZE_DEPS \
+# Mengizinkan pengaturan UID/GID dari argumen build
+ARG APP_UID=1000
+ARG APP_GID=1000
+
+# Install system dependencies
+RUN apk add --no-cache \
+    bash \
+    shadow \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
-    libxml2-dev \
     libzip-dev \
-    oniguruma-dev
-
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-        pdo_mysql \
-        mbstring \
-        zip \
-        exif \
-        pcntl \
-        gd \
-        bcmath \
-        opcache
-
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-FROM php:8.3-fpm-alpine
-
-RUN apk add --no-cache \
-    libpng \
-    libjpeg-turbo \
-    freetype \
-    libxml2 \
-    libzip \
-    oniguruma \
+    zip \
+    unzip \
+    git \
+    curl \
+    icu-dev \
+    oniguruma-dev \
     nodejs \
-    npm \
-    shadow \
-    bash \
-    git
+    npm
 
-COPY --from=builder /usr/local/lib/php/extensions /usr/local/lib/php/extensions
-COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
-COPY --from=builder /usr/bin/composer /usr/bin/composer
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql gd zip intl bcmath mbstring exif opcache pcntl
+
+# Tambahkan konfigurasi batas upload hingga 100MB
+RUN echo -e "upload_max_filesize = 100M\npost_max_size = 100M\nvariables_order = EGPCS" > /usr/local/etc/php/conf.d/uploads.ini
+
+# Sinkronisasi user www-data dengan host secara dinamis
+RUN usermod -u ${APP_UID} www-data && groupmod -g ${APP_GID} www-data
+
+# Dapatkan Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
-
-ARG APP_UID=1000
-ARG APP_GID=1000
-RUN set -eux; \
-    if ! getent group "${APP_GID}" >/dev/null 2>&1; then groupadd -g "${APP_GID}" app; fi; \
-    if ! id -u app >/dev/null 2>&1; then useradd -u "${APP_UID}" -g "${APP_GID}" -m -s /bin/bash app; fi; \
-    mkdir -p /home/app/.composer && chown -R app:app /home/app
-
-COPY uploads.ini /usr/local/etc/php/conf.d/uploads.ini
-
-USER app
